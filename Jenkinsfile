@@ -1,55 +1,30 @@
-## Jenkinsfile (Pipeline)
-
-```groovy
 pipeline {
-  agent any 
+    agent any
 
-  environment {
-    AWS_DEFAULT_REGION = 'ap-south-1'
-  }
-
-  stages {
-    stage('Checkout') {
-      steps { checkout scm }
-    }
-
-    stage('Terraform Init') {
-      steps {
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
-          sh 'terraform init -input=false'
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/NehaDugane/Terraform-jenkins-infra.git'
+            }
         }
-      }
-    }
 
-    stage('Terraform Validate') {
-      steps { sh 'terraform validate' }
-    }
-
-    stage('Terraform Plan') {
-      steps {
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
-          sh 'terraform plan -out=tfplan -input=false'
+        stage('Terraform Init') {
+            steps {
+                sh 'terraform init'
+            }
         }
-      }
-    }
 
-    stage('Approve') {
-      steps {
-        input message: 'Apply Terraform changes?'
-      }
-    }
-
-    stage('Terraform Apply') {
-      steps {
-        withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-creds']]) {
-          sh 'terraform apply -input=false -auto-approve tfplan'
+        stage('Terraform Plan') {
+            steps {
+                sh 'terraform plan'
+            }
         }
-      }
-    }
-  }
 
-  post {
-    always { cleanWs() }
-  }
+        stage('Terraform Apply') {
+            steps {
+                sh 'terraform apply -auto-approve'
+            }
+        }
+    }
 }
-```
+
