@@ -42,10 +42,9 @@ terraform-jenkins-infra/
 ```hcl
 terraform {
   backend "s3" {
-    bucket         = "your-terraform-state-bucket"
+    bucket         = "s3-bucket-071225"
     key            = "dev/infrastructure.tfstate"
     region         = "ap-south-1"
-    dynamodb_table = "terraform-locks"
     encrypt        = true
   }
 }
@@ -123,7 +122,7 @@ data "aws_ami" "amazon_linux_2" {
 
 # optional: create or reference keypair
 resource "aws_key_pair" "default" {
-  key_name   = var.key_name
+  key_name   = "02-december-2025"
   public_key = file(var.public_key_path)
 }
 
@@ -182,8 +181,8 @@ variable "vpc_name" { default = "devops-vpc" }
 variable "vpc_cidr" { default = "10.0.0.0/16" }
 variable "public_subnet_cidrs" { default = ["10.0.1.0/24","10.0.2.0/24","10.0.3.0/24","10.0.4.0/24"] }
 variable "instance_type" { default = "t3.medium" }
-variable "key_name" { default = "devops-key" }
-variable "public_key_path" { default = "~/.ssh/id_rsa.pub" }
+variable "key_name" { default = "02-december-2025" }
+variable "public_key_path" { default = "C:\Users\Neha\Desktop\.ssh/id_rsa.pub" }
 variable "allowed_ssh_cidr" { default = "0.0.0.0/0" }
 variable "allowed_http_cidr" { default = "0.0.0.0/0" }
 ```
@@ -427,9 +426,9 @@ pipeline {
 ```hcl
 region = "ap-south-1"
 vpc_name = "devops-vpc"
-key_name = "devops-key"
-public_key_path = "~/.ssh/id_rsa.pub"
-allowed_ssh_cidr = "YOUR_IP/32"
+key_name = "02-december-2025"
+public_key_path = "C:\Users\Neha\Desktop\.ssh/id_rsa.pub"
+allowed_ssh_cidr = "0.0.0.0/32"
 allowed_http_cidr = "0.0.0.0/0"
 ```
 
